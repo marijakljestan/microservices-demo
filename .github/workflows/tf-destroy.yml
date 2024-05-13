@@ -14,6 +14,12 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+      # reqired for terraform on self-hosted runners
+    - name: Install Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:

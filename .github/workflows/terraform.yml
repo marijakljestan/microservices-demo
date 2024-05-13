@@ -18,6 +18,12 @@ jobs:
       #   with:
       #     credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
+      # reqired for terraform on self-hosted runners
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
