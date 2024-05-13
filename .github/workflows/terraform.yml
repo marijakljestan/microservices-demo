@@ -18,6 +18,10 @@ jobs:
       #   with:
       #     credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
+      - name: Export SA Key for Terraform Backend
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
+
       # reqired for terraform on self-hosted runners
       - name: Install Node
         uses: actions/setup-node@v4
