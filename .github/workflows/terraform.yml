@@ -13,11 +13,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # - name: Authenticate to GCP
-      #   uses:  google-github-actions/auth@v1
-      #   with:
-      #     credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
       - name: Export SA Key for Terraform Backend
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
