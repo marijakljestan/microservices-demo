@@ -31,7 +31,7 @@ jobs:
       - name: Terraform Init
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
-          terraform init -reconfigure
+          terraform init
       
       - name: Terraform Format
         run: |
