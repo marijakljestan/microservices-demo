@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("./sa.json")
+  credentials = file("/home/mkljestan/actions-runner/gcp_sa.json")
   project     = "devops-t1-t2"
   region      = "us-central1"
   zone        = "us-central1-a"
