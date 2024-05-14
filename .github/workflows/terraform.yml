@@ -30,6 +30,8 @@ jobs:
 
       - name: Terraform Init
         run: |
+          echo "---"
+          ls /home/mkljestan/actions-runner/
           terraform init 
       
       - name: Terraform Format
