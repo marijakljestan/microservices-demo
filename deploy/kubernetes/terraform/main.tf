@@ -31,17 +31,17 @@ resource "google_service_account" "gke-sa" {
   display_name = "GKE Service Account"
 }
 
-resource "google_container_cluster" "pavle-cluster" {
+resource "google_container_cluster" "marija-cluster" {
   name                     = "gke-cluster"
   location                 = "us-central1"
   remove_default_node_pool = true
   initial_node_count       = 1
 }
 
-resource "google_container_node_pool" "pavle_preemptible_nodes" {
+resource "google_container_node_pool" "marija_preemptible_nodes" {
   name       = "my-node-pool"
   location   = "us-central1"
-  cluster    = google_container_cluster.pavle-cluster.name
+  cluster    = google_container_cluster.marija-cluster.name
   node_count = 1
 
   node_config {
