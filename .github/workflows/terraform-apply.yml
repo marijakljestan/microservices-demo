@@ -30,7 +30,7 @@ jobs:
 
       - name: Terraform Init
         run: |
-          terraform init -reconfigure
+          terraform init
       
       - name: Terraform Format
         run: |
