@@ -42,7 +42,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          terraform plan
+          terraform plan -lock=false
 
       - name: Terraform Apply
         run: |
