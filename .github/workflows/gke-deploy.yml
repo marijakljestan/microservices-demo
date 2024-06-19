@@ -1,0 +1,32 @@
+name: Deploy k8s manifests on GKE
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: "t2-plan"
+
+      - name: Install kubectl
+        run: gcloud components install kubectl --quiet
+
+      - name: Export key for backend
+        run: export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
+
+      - name: Authenticate with GKE Cluster
+        run: gcloud container clusters get-credentials gke-cluster --region=us-central1
+
+      - name: Deploy Application to GKE
+        run: |
+          kubectl apply -f deploy/kubernetes/complete-demo.yaml
+          until [ "$(kubectl get pods -n sock-shop --no-headers | grep -cEv '([0-9]+)/\1')" -eq 0 ]; do
+              sleep 5s
+              kubectl get pods -n sock-shop
+              kubectl describe node | grep "Allocated resources" -A 10
+          done
+          kubectl get pod -A

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("/home/mkljestan/actions-runner/gcp_sa.json")
+  credentials = file("/home/mkljestan/actions-runner/gcp_sa.json") #TODO add service account admin
   project     = "devops-t1-t2"
   region      = "us-central1"
   zone        = "us-central1-a"
@@ -26,6 +26,7 @@ resource "google_compute_subnetwork" "t1-t2-subnet" {
   ip_cidr_range = "10.0.0.0/24"
 }
 
+# TODO add compute instance admin v1 role and owner
 resource "google_service_account" "gke-sa" {
   account_id   = "gke-service-account-id"
   display_name = "GKE Service Account"
@@ -39,7 +40,7 @@ resource "google_container_cluster" "marija-cluster" {
 }
 
 resource "google_container_node_pool" "marija_preemptible_nodes" {
-  name       = "my-node-pool"
+  name       = "marija-node-pool"
   location   = "us-central1"
   cluster    = google_container_cluster.marija-cluster.name
   node_count = 1
