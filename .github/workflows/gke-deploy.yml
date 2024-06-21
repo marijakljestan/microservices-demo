@@ -15,9 +15,9 @@ jobs:
       - name: Install kubectl
         run: gcloud components install kubectl --quiet
 
-      # TODO try  without this
-      - name: Export key for backend
-        run: export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
+      # TODO remove this
+      # - name: Export key for backend
+      #   run: export GOOGLE_APPLICATION_CREDENTIALS=/home/mkljestan/actions-runner/gcp_sa.json
 
       - name: Authenticate with GKE Cluster
         run: gcloud container clusters get-credentials gke-cluster --region=us-central1

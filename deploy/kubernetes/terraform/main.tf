@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("/home/mkljestan/actions-runner/gcp_sa.json") #TODO add service account admin
+  credentials = file("/home/mkljestan/actions-runner/gcp_sa.json")
   project     = "devops-t1-t2"
   region      = "us-central1"
   zone        = "us-central1-a"
@@ -28,7 +28,7 @@ resource "google_compute_subnetwork" "t1-t2-subnet" {
 
 # TODO add compute instance admin v1 role and owner
 resource "google_service_account" "gke-sa" {
-  account_id   = "gke-service-account-id"
+  account_id   = "gke-service-account"
   display_name = "GKE Service Account"
 }
 
