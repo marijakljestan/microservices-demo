@@ -109,7 +109,7 @@ resource "google_container_cluster" "prod-cluster" {
 
 resource "google_container_node_pool" "prod_preemptible_nodes" {
   name       = "prod-node-pool"
-  location   = "us-central1"
+  location   = "us-central1"  # TODO: use zone
   cluster    = google_container_cluster.prod-cluster.name
   node_count = 1
 
