@@ -50,6 +50,7 @@ resource "google_container_cluster" "dev-cluster" {
   name                     = "dev-cluster"
   location                 = "us-east1"
   network = google_compute_network.vpc.self_link
+  subnetwork = google_compute_subnetwork.dev-subnet.self_link
   remove_default_node_pool = true
   initial_node_count       = 1
 }
@@ -75,6 +76,7 @@ resource "google_container_cluster" "stage-cluster" {
   name                     = "stage-cluster"
   location                 = "us-west1"
   network = google_compute_network.vpc.self_link
+  subnetwork = google_compute_subnetwork.stage-subnet.self_link
   remove_default_node_pool = true
   initial_node_count       = 1
 }
@@ -100,6 +102,7 @@ resource "google_container_cluster" "prod-cluster" {
   name                     = "prod-cluster"
   location                 = "us-central1"
   network = google_compute_network.vpc.self_link
+  subnetwork = google_compute_subnetwork.prod-subnet.self_link
   remove_default_node_pool = true
   initial_node_count       = 1
 }
