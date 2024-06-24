@@ -17,6 +17,7 @@ provider "google" {
 resource "google_compute_network" "vpc" {
   name                    = "t1-t2-vpc"
   auto_create_subnetworks = false
+  routing_mode = "GLOBAL"
 }
 
 resource "google_compute_subnetwork" "dev-subnet" {
