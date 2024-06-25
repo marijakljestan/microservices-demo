@@ -2,28 +2,52 @@ name: Deploy k8s manifests on GKE
 
 on:
   workflow_dispatch:
-    
+    inputs:
+      env:
+        type: choice
+        required: true
+        default: dev
+        description: "Environment:"
+        options:
+          - dev
+          - stage
+          - prod
 jobs:
+  context:
+    runs-on: self-hosted
+    outputs:
+      cluster-location: ${{ steps.location.outputs.zone }}
+    steps:
+      - name: Get Cluster location
+        id: location
+        run: |
+          if [[ "$ENVIRONMENT" == "dev" ]]; then
+            echo "zone=us-east1-c" >> $GITHUB_OUTPUT
+          elif [[ "$ENVIRONMENT" == "stage" ]]; then
+            echo "zone=us-west1-c" >> $GITHUB_OUTPUT
+          else
+            echo "zone=us-central1-c" >> $GITHUB_OUTPUT
+          fi
+        env:
+          ENVIRONMENT: ${{ github.event.inputs.env }}
+
   deploy:
     runs-on: self-hosted
+    needs: [context]
     steps:
       - name: Set up Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: "devops-t1-t2"
+          project_id: ${{ vars.GCP_PROJECT }}
 
       - name: Install kubectl
         run: gcloud components install kubectl --quiet
 
       - name: Authenticate with GKE Cluster
-        run: gcloud container clusters get-credentials stage-cluster --region=us-west1
+        run: gcloud container clusters get-credentials "$CLUSTER_NAME" --zone=${{ needs.context.outputs.cluster-location }}
+        env:
+          CLUSTER_NAME: "${{ github.event.inputs.env }}-cluster"
 
       - name: Deploy Application to GKE
         run: |
-          kubectl apply -f deploy/kubernetes/complete-demo.yaml
-          until [ "$(kubectl get pods -n sock-shop --no-headers | grep -cEv '([0-9]+)/\1')" -eq 0 ]; do
-              sleep 5s
-              kubectl get pods -n sock-shop
-              kubectl describe node | grep "Allocated resources" -A 10
-          done
-          kubectl get pod -A
+          kubectl apply -f deploy/kubernetes/manifests
