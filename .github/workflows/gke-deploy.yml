@@ -12,42 +12,56 @@ on:
           - dev
           - stage
           - prod
+
+env:
+  ENVIRONMENT: ${{ github.event.inputs.env }}
+  PROJECT_ID: ${{ vars.GCP_PROJECT }}
+  APP_NAMESPACE: sock-shop
+  
 jobs:
   context:
     runs-on: self-hosted
     outputs:
-      cluster-location: ${{ steps.location.outputs.zone }}
+      cluster-zone: ${{ steps.prepare-context.outputs.zone }}
+      cluster-name: ${{ steps.prepare-context.outputs.name }}
     steps:
-      - name: Get Cluster location
-        id: location
+      - name: Get Context
+        id: prepare-context
         run: |
           if [[ "$ENVIRONMENT" == "dev" ]]; then
+            echo "name=dev-cluster" >> $GITHUB_OUTPUT
             echo "zone=us-east1-c" >> $GITHUB_OUTPUT
           elif [[ "$ENVIRONMENT" == "stage" ]]; then
+            echo "name=stage-cluster" >> $GITHUB_OUTPUT
             echo "zone=us-west1-c" >> $GITHUB_OUTPUT
           else
+            echo "name=prod-cluster" >> $GITHUB_OUTPUT
             echo "zone=us-central1-c" >> $GITHUB_OUTPUT
           fi
-        env:
-          ENVIRONMENT: ${{ github.event.inputs.env }}
 
   deploy:
     runs-on: self-hosted
     needs: [context]
     steps:
+      - uses: actions/checkout@v4
+      
       - name: Set up Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ vars.GCP_PROJECT }}
+          project_id: ${{ env.PROJECT_ID }}
 
       - name: Install kubectl
         run: gcloud components install kubectl --quiet
 
       - name: Authenticate with GKE Cluster
-        run: gcloud container clusters get-credentials "$CLUSTER_NAME" --zone=${{ needs.context.outputs.cluster-location }}
+        run: gcloud container clusters get-credentials "$CLUSTER_NAME" --zone="$CLUSTER_ZONE"
         env:
-          CLUSTER_NAME: "${{ github.event.inputs.env }}-cluster"
+          CLUSTER_NAME: ${{ needs.context.outputs.cluster-name }}
+          CLUSTER_ZONE: ${{ needs.context.outputs.cluster-zone}}
 
       - name: Deploy Application to GKE
         run: |
           kubectl apply -f deploy/kubernetes/manifests
+          while [ $(kubectl get pods -n ${{ env.APP_NAMESPACE}} --no-headers -o custom-columns=":status.phase" | grep -v "Running" -c) -ne 0 ]; do
+            sleep 5s
+          done
