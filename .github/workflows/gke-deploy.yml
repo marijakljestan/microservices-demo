@@ -22,8 +22,8 @@ jobs:
   context:
     runs-on: self-hosted
     outputs:
-      cluster-zone: ${{ steps.prepare-context.outputs.zone }}
       cluster-name: ${{ steps.prepare-context.outputs.name }}
+      cluster-zone: ${{ steps.prepare-context.outputs.zone }}
     steps:
       - name: Get Context
         id: prepare-context
@@ -60,8 +60,10 @@ jobs:
           CLUSTER_ZONE: ${{ needs.context.outputs.cluster-zone}}
 
       - name: Deploy Application to GKE
+        timeout-minutes: 10
         run: |
           kubectl apply -f deploy/kubernetes/manifests
           while [ $(kubectl get pods -n ${{ env.APP_NAMESPACE}} --no-headers -o custom-columns=":status.phase" | grep -v "Running" -c) -ne 0 ]; do
+            echo "Waiting for all pods to be in Running status..."  
             sleep 5s
           done
