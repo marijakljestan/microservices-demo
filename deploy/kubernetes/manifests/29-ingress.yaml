@@ -5,6 +5,17 @@ metadata:
   name: basic-ingress
   namespace: sock-shop
 spec:
+  rules:
+  - host: marija13.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port:
+              number: 80
   defaultBackend:
     service:
       name: front-end
