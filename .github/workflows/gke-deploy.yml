@@ -102,8 +102,12 @@ jobs:
           CLUSTER_NAME: ${{ needs.context.outputs.cluster-name }}
           CLUSTER_ZONE: ${{ needs.context.outputs.cluster-zone}}
 
+    #  TODO: check if env var is defined
+
       - name: Deploy Application to GKE
         run: |
+          kubectl create secret generic db-credentials-secret --from-literal=db-password=${{ secrets.DB_PASSWORD }} --from-literal=db-name=${{ secrets.DB_NAME }} -n $APP_NAMESPACE
+         
           kubectl apply -f deploy/kubernetes/manifests
           while [ $(kubectl get pods -n ${{ env.APP_NAMESPACE}} --no-headers -o custom-columns=":status.phase" | grep -v "Running" -c) -ne 0 ]; do
             echo "Waiting for all pods to be in Running status..."  
