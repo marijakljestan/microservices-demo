@@ -59,7 +59,6 @@ resource "google_container_node_pool" "dev_preemptible_nodes" {
   name       = "dev-node-pool"
   location   = "us-east1-c"
   cluster    = google_container_cluster.dev-cluster.name
-  node_count = 1
   
   autoscaling {
     min_node_count = 1
@@ -120,7 +119,11 @@ resource "google_container_node_pool" "prod_preemptible_nodes" {
   name       = "prod-node-pool"
   location   = "us-central1-c"
   cluster    = google_container_cluster.prod-cluster.name
-  node_count = 1
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
 
   node_config {
     preemptible  = true
