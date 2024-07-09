@@ -13,6 +13,11 @@ variable "cluster" {
   type = string
 }
 
+variable "initial_node_count" {
+  description = "Inital number of the nodes in the pool"
+  type = number
+}
+
 variable "min_node_count" {
   description = "Minimum number of the nodes in the node pool"
   type = number

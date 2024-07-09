@@ -62,6 +62,7 @@ module "dev_preemptible_nodes" {
   name            = "dev-node-pool"
   location        = var.dev_zone
   cluster         = module.dev-cluster.name
+  initial_node_count = 2
   min_node_count  = 1
   max_node_count  = 3
   preemptible     = true
@@ -83,6 +84,7 @@ module "stage_preemptible_nodes" {
   name            = "stage-node-pool"
   location        = var.stage_zone
   cluster         = module.stage-cluster.name
+  initial_node_count = 2
   min_node_count  = 1
   max_node_count  = 3
   preemptible     = true
@@ -103,6 +105,7 @@ module "prod_preemptible_nodes" {
   name            = "prod-node-pool"
   location        = var.prod_zone
   cluster         = module.prod-cluster.name
+  initial_node_count = 2
   min_node_count  = 1
   max_node_count  = 3
   preemptible     = true
